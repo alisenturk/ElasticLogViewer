@@ -1,0 +1,173 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/template.xhtml">
+    
+    <ui:define name="title">Application Logs</ui:define>
+    <ui:define name="pagetitle">Application Logs</ui:define>
+    <ui:define name="content">
+        <f:view id="appLogView">
+            <h:form id="formAppLog">
+                <p:growl id="growlAppLog"></p:growl>
+                <p:fieldset legend="Search Params">
+                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                 style="border:none !important; ">
+
+                        <p:column>
+                            <p:outputLabel for="slctAppProjects" value="Projects"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="slctAppProjects" value="#{appLogAction.criteria.projectName}" required="true" requiredMessage="Proje seçimi yapınız!">
+                                <f:selectItems value="#{appLogAction.projectNames}" var="prjct" itemLabel="#{prjct}" itemValue="#{prjct}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+
+                        <p:column>
+                            <p:outputLabel for="slctAppServices" value="Service Name"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="slctAppServices" value="#{appLogAction.criteria.serviceName}" required="false" requiredMessage="Proje seçimi yapınız!">
+                                <f:selectItem noSelectionOption="true" itemLabel="Choose"></f:selectItem>
+                                <f:selectItems value="#{appLogAction.serviceNames}" var="srvs" itemLabel="#{srvs}" itemValue="#{srvs}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+                        
+                        
+                        <p:column>
+                            <p:outputLabel for="slctAppTransaction" value="Transaction ID"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="slctAppTransaction" value="#{appLogAction.criteria.transactionId}" 
+                                             required="false" requiredMessage="Proje seçimi yapınız!">
+                                <f:selectItem noSelectionOption="true" itemLabel="Choose"></f:selectItem>
+                                <f:selectItems value="#{appLogAction.transactionIds}" var="tran" itemLabel="#{tran}" itemValue="#{tran}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+                        
+                        
+                        <p:column>
+                            <p:outputLabel for="edtAppProcessDate" value="Process Date"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="edtAppProcessDate" value="#{appLogAction.criteria.beginDate}" 
+                                        pattern="dd/MM/yyyy HH:mm:ss"
+                                        showButtonPanel="true" showOn="button" readonlyInput="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                            </p:calendar>
+                            <p:outputLabel value="-" />
+                            <p:calendar id="edtAppProcessDate2" value="#{appLogAction.criteria.endDate}" 
+                                        pattern="dd/MM/yyyy HH:mm:ss"
+                                        showButtonPanel="true" showOn="button" readonlyInput="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                            </p:calendar>
+                        </p:column>
+
+                        <p:column>
+                            <p:outputLabel value="Search Keyword" for="edtAppSearchKeyword"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="edtAppSearchKeyword" value="#{appLogAction.criteria.keyword}" 
+                                         style="width:80%"
+                                         maxlength="120" required="false" requiredMessage="Search Keyword is required!">
+                            </p:inputText>    
+                        </p:column>
+
+                    </p:panelGrid>
+                    <br/>
+                    <p:commandButton value="Search" action="#{appLogAction.searchLog()}"
+                                     update="growlAppLog,appLogDataTable" >
+                    </p:commandButton>
+                </p:fieldset>
+                <br/>
+
+                <p:fieldset legend="Search Results">
+                    <p:dataTable id="appLogDataTable" value="#{appLogAction.appLogList}" var="app"
+                                 rows="10"
+                                 paginator="true"
+                                 reflow="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,25,50,100,150">
+
+                        <p:column headerText="Project">
+                            <h:outputText value="#{app.project}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Server IP">
+                            <h:outputText value="#{app.serverIP}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Service Name"  filterBy="#{app.serviceName}" filterMatchMode="contains" sortBy="#{app.serviceName}">
+                            <h:outputText value="#{app.serviceName}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Transaction ID"  filterBy="#{app.transactionId}" filterMatchMode="contains" sortBy="#{app.transactionId}">
+                            <h:outputText value="#{app.transactionId}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Username"  filterBy="#{app.username}" filterMatchMode="contains" sortBy="#{app.username}">
+                            <h:outputText value="#{app.username}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Password"  filterBy="#{app.password}" filterMatchMode="contains" sortBy="#{app.password}">
+                            <h:outputText value="#{app.password}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Request Date" >
+                            <h:outputText value="#{app.requestDate}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Resquest Time">
+                            <h:outputText value="#{app.requestTime}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Token"  >
+                            <h:outputText value="#{app.token}" title="#{app.token}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Service URL" >
+                            <h:outputText value="#{app.webServerUrl}" title="#{app.webServerUrl}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Request" visible="false">
+                            <h:outputText value="#{app.requestData}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="" exportable="false">
+                            <p:commandButton value="Request" 
+                                            update=":formDisp1:displayErrorMessage1"
+                                            oncomplete="PF('dlgErrorInfo1').show()"  icon="ui-icon-search"
+                                            rendered="#{app.requestData ne null}" >
+                                <f:setPropertyActionListener value="#{app}" target="#{appLogAction.instance}" />
+                           </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Response Code">
+                            <h:outputText value="#{app.responseCode}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Response" visible="false">
+                            <h:outputText value="#{app.responseData}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="" exportable="false">
+                            <p:commandButton value="Response" 
+                                            update=":formDisp2:displayErrorMessage2"
+                                            oncomplete="PF('dlgErrorInfo2').show()"  icon="ui-icon-search"
+                                            rendered="#{app.responseData ne null}" >
+                                <f:setPropertyActionListener value="#{app}" target="#{appLogAction.instance}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:commandLink value="Excel Export">
+                        <p:dataExporter type="xls" target="appLogDataTable" fileName="applogs" />
+                    </h:commandLink>
+
+
+                </p:fieldset>
+            </h:form>
+            <p:dialog modal="true" resizable="false" header="Request Info" widgetVar="dlgErrorInfo1" showEffect="fold" closable="true">
+                <h:form id="formDisp1">
+                    <p:scrollPanel id="displayErrorMessage1" style="width:600px;height:400px;border:none;" >                      
+                        <h:outputText id="extraInfo1" value="#{appLogAction.instance.requestData}"></h:outputText>
+                   </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+            <p:dialog modal="true" resizable="false" header="Response Info" widgetVar="dlgErrorInfo2" showEffect="fold" closable="true">
+                <h:form id="formDisp2">
+                    <p:scrollPanel id="displayErrorMessage2" style="width:600px;height:400px;border:none;" >                      
+                        <h:outputText id="extraInfo2" value="#{appLogAction.instance.responseData}"></h:outputText>
+                   </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+        </f:view>    
+    </ui:define>
+</ui:composition>

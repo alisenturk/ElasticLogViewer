@@ -1,0 +1,131 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/template.xhtml">
+    
+    <ui:define name="title">Error Logs</ui:define>
+    <ui:define name="pagetitle">Error Logs</ui:define>
+    <ui:define name="content">
+        <f:view id="errorLogView">
+            <h:form id="formErrorLog">
+                <p:growl id="growlErrorLog"></p:growl>
+
+                <p:fieldset legend="Search Params">
+                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                 style="border:none !important; ">
+
+                        <p:column>
+                            <p:outputLabel for="slctProjects" value="Projects"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="slctProjects" value="#{errorLogAction.criteria.projectName}" required="true" requiredMessage="Proje seçimi yapınız!">
+                                <f:selectItems value="#{errorLogAction.projectNames}" var="prjct" itemLabel="#{prjct}" itemValue="#{prjct}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+
+                        <p:column>
+                            <p:outputLabel for="edtProcessDate" value="Process Date"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="edtProcessDate" value="#{errorLogAction.criteria.beginDate}" 
+                                        pattern="dd/MM/yyyy HH:mm:ss"
+                                        showButtonPanel="true" showOn="button" readonlyInput="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                            </p:calendar>
+                            <p:outputLabel value="-" />
+                            <p:calendar id="edtProcessDate2" value="#{errorLogAction.criteria.endDate}" 
+                                        pattern="dd/MM/yyyy HH:mm:ss"
+                                        showButtonPanel="true" showOn="button" readonlyInput="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                            </p:calendar>
+                        </p:column>
+
+                        <p:column>
+                            <p:outputLabel value="Search Keyword" for="edtSearchKeyword"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="edtSearchKeyword" value="#{errorLogAction.criteria.keyword}" 
+                                         style="width:80%"
+                                         maxlength="120" required="false" requiredMessage="Search Keyword is required!">
+                            </p:inputText>    
+                        </p:column>
+
+                    </p:panelGrid>
+                    <br/>
+                    <p:commandButton value="Search" action="#{errorLogAction.searchLog()}"
+                                     update="growlErrorLog,errorDataTable" >
+                    </p:commandButton>
+                </p:fieldset>
+                <br/>
+
+                <p:fieldset legend="Search Results">
+                    <p:dataTable id="errorDataTable" value="#{errorLogAction.errorList}" var="err"
+                                 rows="10"
+                                 paginator="true"
+                                 reflow="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,25,50,100,150">
+                        <p:column headerText="Error Date" sortBy="#{err.errorDate}">
+                            <h:outputText value="#{err.errorDate}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Error Time" sortBy="#{err.errorTime}">
+                            <h:outputText value="#{err.errorTime}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Process Date" visible="false">
+                            <h:outputText value="#{err.processDate}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Classs Name" filterBy="#{err.className}" filterMatchMode="contains" sortBy="#{err.className}">
+                            <h:outputText value="#{err.className}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="File Name" filterBy="#{err.fileName}" filterMatchMode="contains">
+                            <h:outputText value="#{err.fileName}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Method Name" filterBy="#{err.methodName}" filterMatchMode="contains">
+                            <h:outputText value="#{err.methodName}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Line Number">
+                            <h:outputText value="#{err.lineNumber}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Username">
+                            <h:outputText value="#{err.userName}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Error Message" filterBy="#{err.errorMessage}" filterMatchMode="contains">
+                            <h:outputText value="#{err.errorMessage}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="" exportable="false">
+                            <p:commandButton value="Extra Info" 
+                                            update=":formDisp1:displayErrorMessage"
+                                            oncomplete="PF('dlgErrorInfo').show()"  icon="ui-icon-search"
+                                            rendered="#{err.extraInfo ne null}" >
+                                <f:setPropertyActionListener value="#{err}" target="#{errorLogAction.instance}" />
+                           </p:commandButton>
+                        </p:column>
+                        <p:column headerText="Extra Info" visible="false">
+                            <h:outputText value="#{err.extraInfo}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Server IP">
+                            <h:outputText value="#{err.serverIP}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Project">
+                            <h:outputText value="#{err.project}"></h:outputText>
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:commandLink value="Excel Export">
+                        <p:dataExporter type="xls" target="errorDataTable" fileName="errors" />
+                    </h:commandLink>
+
+                </p:fieldset>
+            </h:form>
+            <p:dialog modal="true" resizable="false" header="Extra Info" widgetVar="dlgErrorInfo" showEffect="fold" closable="true">
+                <h:form id="formDisp1">
+                    <p:scrollPanel id="displayErrorMessage" style="width:600px;height:400px;border:none;" >                      
+                        <h:outputText id="extraInfo" value="#{errorLogAction.instance.extraInfo}"></h:outputText>
+                   </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+        </f:view>    
+    </ui:define>
+</ui:composition>

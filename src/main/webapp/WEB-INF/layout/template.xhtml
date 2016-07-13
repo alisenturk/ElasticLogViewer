@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="Log Viewer" />
+        <meta name="author" content="asenturk" />
+
+
+        <h:outputStylesheet name="/css/simple-sidebar.css"/>
+        <title><ui:insert name="title">LogViewer</ui:insert></title>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style>
+            .btn {
+                display: inline-block;
+                padding: 6px 12px;
+                margin-bottom: 0;
+                font-size: 14px;
+                font-weight: normal;
+                line-height: 1.42857143;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: middle;
+                -ms-touch-action: manipulation;
+                    touch-action: manipulation;
+                cursor: pointer;
+                -webkit-user-select: none;
+                   -moz-user-select: none;
+                    -ms-user-select: none;
+                        user-select: none;
+                background-image: none;
+                border: 1px solid transparent;
+                border-radius: 4px;
+          }
+          .btn:focus,
+          .btn:active:focus,
+          .btn.active:focus,
+          .btn.focus,
+          .btn:active.focus,
+          .btn.active.focus {
+            outline: thin dotted;
+            outline: 5px auto -webkit-focus-ring-color;
+            outline-offset: -2px;
+          }
+          .btn:hover,
+          .btn:focus,
+          .btn.focus {
+            color: #333;
+            text-decoration: none;
+          }
+          .btn:active,
+          .btn.active {
+            background-image: none;
+            outline: 0;
+            -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+                    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+          }
+          .btn.disabled,
+          .btn[disabled],
+          fieldset[disabled] .btn {
+            cursor: not-allowed;
+            filter: alpha(opacity=65);
+            -webkit-box-shadow: none;
+                    box-shadow: none;
+            opacity: .65;
+          }
+          a.btn.disabled,
+          fieldset[disabled] a.btn {
+            pointer-events: none;
+          }
+          .btn-default {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #8c8c8c;
+          }
+          .btn-default:focus,
+          .btn-default.focus {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #8c8c8c;
+          }
+          .btn-default:hover {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+          }
+          .btn-default:active,
+          .btn-default.active,
+          .open > .dropdown-toggle.btn-default {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+          }
+          .btn-default:active:hover,
+          .btn-default.active:hover,
+          .open > .dropdown-toggle.btn-default:hover,
+          .btn-default:active:focus,
+          .btn-default.active:focus,
+          .open > .dropdown-toggle.btn-default:focus,
+          .btn-default:active.focus,
+          .btn-default.active.focus,
+          .open > .dropdown-toggle.btn-default.focus {
+            color: #333;
+            background-color: #d4d4d4;
+            border-color: #8c8c8c;
+          }
+          .btn-default:active,
+          .btn-default.active,
+          .open > .dropdown-toggle.btn-default {
+            background-image: none;
+          }
+          .btn-default.disabled:hover,
+          .btn-default[disabled]:hover,
+          fieldset[disabled] .btn-default:hover,
+          .btn-default.disabled:focus,
+          .btn-default[disabled]:focus,
+          fieldset[disabled] .btn-default:focus,
+          .btn-default.disabled.focus,
+          .btn-default[disabled].focus,
+          fieldset[disabled] .btn-default.focus {
+            background-color: #fff;
+            border-color: #ccc;
+          }
+          .btn-default .badge {
+            color: #fff;
+            background-color: #333;
+          }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <a href="#">
+                            Log Viewer
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#{request.contextPath}/index.xhtml">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="#{request.contextPath}/errorlogs.xhtml">Error Logs</a>
+                    </li>
+                    <li>
+                        <a href="#{request.contextPath}/applogs.xhtml">Application Logs</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Hide Menu</a>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1><ui:insert name="pagetitle"></ui:insert></h1>
+                            <ui:insert name="content"></ui:insert>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <h:outputText value="Lüfen bekleyiniz..."></h:outputText>
+            </p:dialog>   
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- Menu Toggle Script -->
+        <script>
+            $("#menu-toggle").click(function(e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+        </script>
+
+    </h:body>    
+</html>
