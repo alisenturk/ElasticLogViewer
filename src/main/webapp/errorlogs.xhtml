@@ -21,7 +21,9 @@
                         </p:column>
                         <p:column>
                             <p:selectOneMenu id="slctProjects" value="#{errorLogAction.criteria.projectName}" required="true" requiredMessage="Proje seçimi yapınız!">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"></f:selectItem>
                                 <f:selectItems value="#{errorLogAction.projectNames}" var="prjct" itemLabel="#{prjct}" itemValue="#{prjct}"></f:selectItems>
+                                <p:ajax event="change" global="false" process="@this"></p:ajax>
                             </p:selectOneMenu>
                         </p:column>
 
@@ -33,12 +35,14 @@
                                         pattern="dd/MM/yyyy HH:mm:ss"
                                         showButtonPanel="true" showOn="button" readonlyInput="true">
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                                <p:ajax event="change" global="false" process="@this"></p:ajax>
                             </p:calendar>
                             <p:outputLabel value="-" />
                             <p:calendar id="edtProcessDate2" value="#{errorLogAction.criteria.endDate}" 
                                         pattern="dd/MM/yyyy HH:mm:ss"
                                         showButtonPanel="true" showOn="button" readonlyInput="true">
                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"></f:convertDateTime>
+                                <p:ajax event="change" global="false" process="@this"></p:ajax>
                             </p:calendar>
                         </p:column>
 
@@ -49,6 +53,7 @@
                             <p:inputText id="edtSearchKeyword" value="#{errorLogAction.criteria.keyword}" 
                                          style="width:80%"
                                          maxlength="120" required="false" requiredMessage="Search Keyword is required!">
+                                <p:ajax event="keyup" global="false" process="@this"></p:ajax>
                             </p:inputText>    
                         </p:column>
 

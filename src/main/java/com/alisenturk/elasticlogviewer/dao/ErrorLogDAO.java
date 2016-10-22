@@ -38,7 +38,7 @@ public class ErrorLogDAO implements Serializable{
         setting.setIndexName(Index.ERRORLOG.getIndexName());
         setting.setMappingName(Index.ERRORLOG.getMappingName());
         
-        //setting.setDebugMode(true); //Debug modu açar
+        setting.setDebugMode(true); //Debug modu açar
         
         elasticService = ElasticService.createElasticService(setting);
     }

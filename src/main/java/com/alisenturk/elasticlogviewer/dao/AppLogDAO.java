@@ -38,7 +38,7 @@ public class AppLogDAO implements Serializable{
         setting.setIndexName(Index.APPLOG.getIndexName());
         setting.setMappingName(Index.APPLOG.getMappingName());
         
-        //setting.setDebugMode(true); //Debug modu açar
+        setting.setDebugMode(true); //Debug modu açar
         
         elasticService = ElasticService.createElasticService(setting);
     }
@@ -160,9 +160,30 @@ public class AppLogDAO implements Serializable{
             }
             
             if(query[0]!=null){
+                
                 if(criteria.getKeyword()!=null && (criteria.getKeyword().indexOf("*")>-1 || criteria.getKeyword().indexOf("?")>-1) ){
-                    shouldParams.add(new SearchParam("requestData", FilterType.WILDCARD,query, VariableType.STRING));
-                    shouldParams.add(new SearchParam("responseData", FilterType.WILDCARD,query, VariableType.STRING));
+                    String words[] = criteria.getKeyword().split(" ");
+                    
+                    String str2[] = new String[1];
+                    
+                    for(String word:words){
+                        str2 = new String[1];
+                        str2[0] = word;                        
+                        shouldParams.add(new SearchParam("requestData", FilterType.WILDCARD,str2, VariableType.STRING));                        
+                    
+                    }
+                    
+                    
+                    for(String word:words){
+                        str2 = new String[1];
+                        str2[0] = word;                        
+                        shouldParams.add(new SearchParam("responseData", FilterType.WILDCARD,str2, VariableType.STRING));
+                    
+                    }                                       
+                    
+                }else if(criteria.getKeyword()!=null && criteria.getKeyword().indexOf(" ")>-1 && (criteria.getKeyword().indexOf("*")>-1 || criteria.getKeyword().indexOf("?")>-1) ){
+                    shouldParams.add(new SearchParam("requestData", FilterType.REGEXP,query, VariableType.STRING));
+                    shouldParams.add(new SearchParam("responseData", FilterType.REGEXP,query, VariableType.STRING));
                 }else{
                     shouldParams.add(new SearchParam("requestData", FilterType.TERM,query, VariableType.STRING));
                     shouldParams.add(new SearchParam("responseData", FilterType.TERM,query, VariableType.STRING));
